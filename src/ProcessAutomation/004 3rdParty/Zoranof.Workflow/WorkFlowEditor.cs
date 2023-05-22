@@ -30,7 +30,7 @@ namespace Zoranof.Workflow
 
         public ObservableCollection<WorkflowNode> Items
         {
-            get { return (ObservableCollection<WorkflowNode>)GetValue(ItemsProperty); }
+            get { return (ObservableCollection<WorkflowNode>)GetValue(ItemsProperty) ?? new ObservableCollection<WorkflowNode>(); }
             set { SetValue(ItemsProperty, value); }
         }
 
@@ -76,6 +76,8 @@ namespace Zoranof.Workflow
             IsEditable = true;
             AllowDrop = true;
             HoverColor = Brushes.Red;
+
+            Items = new ObservableCollection<WorkflowNode>();
         }
 
         #region Fields
@@ -90,6 +92,8 @@ namespace Zoranof.Workflow
         public double NearOptionDistance { get; set; } = 15;
 
         public double ConnectLineDistance { get; set; } = DefaultConnectDistance;
+
+        private Dictionary<string, Type> m_load_types = new Dictionary<string, Type>();
         #endregion
 
         #region Variables
@@ -445,6 +449,15 @@ namespace Zoranof.Workflow
         #endregion
 
         #region Public Slots
+        public bool LoadAssembly(string assemblyFile)
+        {
+            bool flag = false;
+
+
+
+            return flag;
+        }
+
         public WorkflowOption GetNearOption(Point point)
         {
 
@@ -463,12 +476,6 @@ namespace Zoranof.Workflow
             return roption;
         }
 
-        public Polygon BuildConnectLine()
-        {
-            var p = new Polygon();
-
-            return p;
-        }
 
         /// <summary>
         /// 是否碰撞
@@ -769,7 +776,6 @@ namespace Zoranof.Workflow
         {
             base.OnMouseMove(e);
 
-
             #region Hover
             // link
             foreach (var link in Links)
@@ -784,17 +790,17 @@ namespace Zoranof.Workflow
             }
 
             // item and options
-            var mouseInItem = Items?.FirstOrDefault();
+            //var mouseInItem = Items?.FirstOrDefault();
 
-            //var mouseInItem = Items
-            //    .Where(x => RectMapToViewer(new Rect(
-            //        x.BoundingRect.Left - NearItemDistance,
-            //        x.BoundingRect.Top - NearItemDistance,
-            //        x.BoundingRect.Width + 2 * NearItemDistance,
-            //        x.BoundingRect.Height + 2 * NearItemDistance))
-            //    .Contains(e.GetPosition(this)))
-            //    .OrderByDescending(x => x.ZIndex)
-            //    .FirstOrDefault();
+            var mouseInItem = Items
+                .Where(x => RectMapToViewer(new Rect(
+                    x.BoundingRect.Left - NearItemDistance,
+                    x.BoundingRect.Top - NearItemDistance,
+                    x.BoundingRect.Width + 2 * NearItemDistance,
+                    x.BoundingRect.Height + 2 * NearItemDistance))
+                .Contains(e.GetPosition(this)))
+                .OrderByDescending(x => x.ZIndex)
+                .FirstOrDefault();
 
             bool isNeedToRefreshHover = false;
             //鼠标下有元素
@@ -850,7 +856,7 @@ namespace Zoranof.Workflow
             else if (m_isReadyToConnectOption)
             {
                 m_toConnectOptionEndPoint = e.GetPosition(this);
-                BuildConnectLine();
+
                 InvalidateVisual();
             }
             // 移动已选择元素
@@ -893,7 +899,7 @@ namespace Zoranof.Workflow
             base.OnMouseWheel(e);
             if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
-                return;
+                //return;
                 double zoom = e.Delta < 0 ? 1.05 : 0.95;
                 ViewerScale = zoom * ViewerScale;
                 Console.Write(ViewerScale);

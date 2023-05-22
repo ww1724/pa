@@ -21,6 +21,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\001 Commons\PA.Common\PA.Common.csproj" />
     <ProjectReference Include="..\..\001 Commons\PA.ICommon\PA.ICommon.csproj" />
+    <ProjectReference Include="..\..\002 Services\PA.Service\PA.Service.csproj" />
+    <ProjectReference Include="..\..\003 Plugins\PA.Plugin.Core\PA.Plugin.Core.csproj" />
     <ProjectReference Include="..\..\004 3rdParty\Zoranof.UI.Wpf\src\Zoranof.UI.Wpf\Zoranof.UI.Wpf.csproj" />
     <ProjectReference Include="..\..\004 3rdParty\Zoranof.Workflow\Zoranof.Workflow.csproj" />
   </ItemGroup>

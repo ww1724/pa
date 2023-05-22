@@ -6,15 +6,12 @@ namespace Zoranof.Workflow
 {
     public class StartNode : WorkflowNode
     {
-
-
         public StartNode() : base()
         {
-            Height = 40;
-            Width = 60;
+            Height = 60;
+            Width = 300;
             Pos = new Point(0, 0);
             BoundingRect = new Rect(Pos.X, Pos.Y, Width, Height);
-            base.ApplyDefaultOptions();
         }
 
         #region Public Slots

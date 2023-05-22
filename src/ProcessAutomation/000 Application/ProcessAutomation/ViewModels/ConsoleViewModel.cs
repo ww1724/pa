@@ -1,9 +1,18 @@
-﻿using PA.Common.Mvvm;
+﻿using PA.Share;
+using PA.Share.Mvvm;
 using ReactiveUI;
 
 namespace PA.ViewModels
 {
-    public class ConsoleViewModel : ReactiveObject, IViewModel
+    public class ConsoleViewModel : ReactiveObject, IRoutableViewModel, IViewModel
     {
+        public ConsoleViewModel()
+        {
+
+        }
+
+        public string UrlPathSegment => Constants.ConsoleView;
+
+        public IScreen HostScreen { get; set;}
     }
 }

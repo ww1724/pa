@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PA.Share.Mvvm
+namespace PA.Share
 {
-    public interface IViewModel
+    public class Environments
     {
     }
 }

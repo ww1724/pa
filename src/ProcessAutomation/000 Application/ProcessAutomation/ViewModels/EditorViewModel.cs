@@ -1,11 +1,13 @@
-﻿using PA.Common.Mvvm;
+﻿using PA.Share;
+using PA.Share.Mvvm;
 using ReactiveUI;
 
 namespace PA.ViewModels
 {
-    public class EditorViewModel : ReactiveObject, IViewModel
+    public class EditorViewModel : ReactiveObject, IViewModel, IRoutableViewModel
     {
-        public int CodeId { get; set; }
+        public string UrlPathSegment => Constants.EditorView;
 
+        public IScreen HostScreen { get; }
     }
 }

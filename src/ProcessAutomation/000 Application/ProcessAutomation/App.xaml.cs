@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using PA.Common;
+using PA.Share;
 using PA.ICommon;
 using PA.Views;
 using PA.ViewModels;
@@ -7,6 +7,10 @@ using ReactiveUI;
 using Splat;
 using System;
 using System.Windows;
+using PA.Share.Stores;
+using PA.Share.Mvvm;
+using Zoranof.WorkFlow;
+using PA.Service;
 
 namespace ProcessAutomation
 {
@@ -38,11 +42,34 @@ namespace ProcessAutomation
             Locator.CurrentMutable.RegisterLazySingleton<IPluginManager>(() => pluginManager);
 
             ServiceCollection services = new ServiceCollection();
+            services.AddCustomWorkFlow();
             serviceProvider = services.BuildServiceProvider();
-            Locator.CurrentMutable.RegisterLazySingleton<IServiceProvider>(() => serviceProvider);
+            Locator.CurrentMutable.RegisterConstant(serviceProvider);
 
-            // main views
+            //Locator.CurrentMutable.RegisterConstant(new DbService(), typeof(DbService));
+            Locator.CurrentMutable.RegisterConstant(new LoggerService(), typeof(LoggerService));
+
+            Locator.CurrentMutable.RegisterConstant(new GlobalStore(), typeof(GlobalStore));
+            Locator.CurrentMutable.RegisterConstant(new RouterStore(), typeof(RouterStore));
+            Locator.CurrentMutable.RegisterConstant(new TestingStore(), typeof(TestingStore));
+
+
+            // views of main
             Locator.CurrentMutable.Register(() => new ShellView(), typeof(IViewFor<ShellViewModel>));
+            Locator.CurrentMutable.Register(() => new EditorView(), typeof(IViewFor<EditorViewModel>));
+            Locator.CurrentMutable.Register(() => new TestingView(), typeof(IViewFor<TestingViewModel>));
+            Locator.CurrentMutable.Register(() => new ConsoleView(), typeof(IViewFor<ConsoleViewModel>));
+            Locator.CurrentMutable.Register(() => new HistoryView(), typeof(IViewFor<HistoryViewModel>));
+            Locator.CurrentMutable.Register(() => new NewTabView(), typeof(IViewFor<NewTabViewModel>));
+
+            // viewmodels of main
+            Locator.CurrentMutable.Register(() => new ShellViewModel(), typeof(IViewModel), Constants.ShellView);
+            Locator.CurrentMutable.Register(() => new EditorViewModel(), typeof(IViewModel), Constants.EditorView);
+            Locator.CurrentMutable.Register(() => new TestingViewModel(), typeof(IViewModel), Constants.TestingView);
+            Locator.CurrentMutable.Register(() => new ConsoleViewModel(), typeof(IViewModel), Constants.ConsoleView);
+            Locator.CurrentMutable.Register(() => new HistoryViewModel(), typeof(IViewModel), Constants.HistoryView);
+            Locator.CurrentMutable.Register(() => new NewTabViewModel(), typeof(IViewModel), Constants.NewTabView);
+
 
             // plugins
             pluginManager.AddPluginPaths(new string[]{ "./plugins"});

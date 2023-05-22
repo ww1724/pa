@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using WorkflowCore.Models;
 using Zoranof.GraphicsFramework;
 using Zoranof.Workflow;
 using Zoranof.Workflow.Common;
@@ -16,9 +17,10 @@ namespace Zoranof.WorkFlow
             AcceptDrops = false;
             AcceptHoverEvents = true;
             AcceptTouchEvents = false;
-            Width = 200;
-            Height = 300;
+            Width = 300;
+            Height = 60;
             Pos = new Point(0, 0);
+            Id = Guid.NewGuid().ToString();
 
             Options = new List<WorkflowOption>();
             Background = Brushes.Transparent;
@@ -36,20 +38,25 @@ namespace Zoranof.WorkFlow
             {
                 BoundingRect = new Rect(pos.X, pos.Y, Width, Height);
             };
+
         }
 
+        #region Data
+        public string Id { get; set; }
 
+        public object Data { get { return data; } set { data = value; } }
+
+        public StepBody StepBody { get; set; }
+        #endregion
 
         #region Private Member
         private Point pos;
         private double width;
-
         private double height;
+        private object data;
         #endregion
 
-
         #region Fields
-
         public string Title { get; set; }
 
         public char Icon { get; set; }
@@ -61,8 +68,6 @@ namespace Zoranof.WorkFlow
         public WorkflowEditor AttachedView { get; set; }
 
         public double NearOptionDistance { get; set; }
-
-        public Guid Id { get; set; }
 
         public Brush Background { get; set; }
 
@@ -138,11 +143,6 @@ namespace Zoranof.WorkFlow
         public Rect SelfRect { get => new Rect(0, 0, width, Height); }
 
         /// <summary>
-        /// 包含的数据
-        /// </summary>
-        public object Data { get; set; }
-
-        /// <summary>
         /// 元数据
         /// </summary>
         public Dictionary<string, object> MetaData { get; set; }
@@ -178,6 +178,8 @@ namespace Zoranof.WorkFlow
         #endregion
 
         #region public slots
+        public virtual string ExportToJson() { return ""; }
+
         public virtual void UpdateOptions()
         {
 
@@ -226,7 +228,11 @@ namespace Zoranof.WorkFlow
         }
         #endregion
 
-        #region Events
+        #region Drawing Events
+        /// <summary>
+        /// 自绘
+        /// </summary>
+        /// <param name="drawingContext"></param>
         public  virtual void OnRender(DrawingContext drawingContext)
         {
             drawingContext.PushTransform(new TranslateTransform(Pos.X, Pos.Y));
@@ -349,6 +355,7 @@ namespace Zoranof.WorkFlow
 
         public event EventHandler TextInputed;
 
+        public event EventHandler ContentExported;
 
 
         public virtual void OnSizeChanged(EventArgs e) => SizeChanged?.Invoke(this, e);
@@ -360,6 +367,8 @@ namespace Zoranof.WorkFlow
         public virtual void OnItemMoved(EventArgs e) => ItemMoved?.Invoke(this, e);
 
         public virtual void OnTextInputed(TextCompositionEventArgs e) => TextInputed?.Invoke(this, e);
+
+        public virtual void OnContentExported(EventArgs e) => ContentExported?.Invoke(this, e);
         #endregion
     }
 

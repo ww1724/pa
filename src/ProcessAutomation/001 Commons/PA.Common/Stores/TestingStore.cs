@@ -1,40 +1,47 @@
-﻿using PA.Common.Mvvm;
+﻿using PA.Share.Mvvm;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using System.Collections.ObjectModel;
+using System.Reactive;
+using Zoranof.Workflow.Base;
+using Zoranof.WorkFlow;
 
-namespace PA.Common.Stores
+namespace PA.Share.Stores
 {
     public class TestingStore : ReactiveObject, IViewModel
     {
-        private Dictionary<string, string> codeMaps;
-        private string workflowCode;
-        private string flowChartCode;
 
-        public TestingStore() { }
+        [Reactive]
+        public string WorkflowCode { get; set; }
 
-        public string CurrentTestingCode { get; set; }
+        [Reactive]
+        public string FlowChartCode { get; set; }
 
-        public Dictionary<string, string> OpeningCodeMaps { get => codeMaps; set => this.RaiseAndSetIfChanged(ref codeMaps, value); }
+        private ObservableCollection<WorkflowNode> nodes;
 
-        public string WorkflowCode { get => workflowCode; set => workflowCode = value; }
+        //[Reactive]
+        public ObservableCollection<WorkflowNode> Nodes { get => nodes; set => this.RaiseAndSetIfChanged(ref nodes, value); }
 
-        public string FlowChartCode { get => flowChartCode; set => flowChartCode = value; }
+
+        #region Commands
+        public ReactiveCommand<Unit, Unit> AddRandomeNodeCommand { get; }
+
+        #endregion
+
+        public TestingStore() {
+
+            AddRandomeNodeCommand = ReactiveCommand.Create(() => AddRandomeNode());
+        }
+
+        public string CurrentCode { get; set; }
 
         #region Actions
-        public void InitAssembly()
+        public void AddRandomeNode()
         {
-
-        }
-
-        public void LoadTestingCode()
-        {
-
-        }
-
-        public void SwitchTestingCode(string id)
-        {
-            CurrentTestingCode = OpeningCodeMaps[id];
+            Nodes.Add(new StartNode() { });
         }
         #endregion
+
 
     }
 }

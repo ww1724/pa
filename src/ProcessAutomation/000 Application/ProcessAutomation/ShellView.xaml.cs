@@ -1,4 +1,5 @@
-﻿using PA.ViewModels;
+﻿using PA.Share;
+using PA.ViewModels;
 using ReactiveUI;
 using System.Reactive.Disposables;
 using System.Windows;
@@ -19,7 +20,10 @@ namespace PA.Views
             this.WhenActivated(o =>
             {
                 this.OneWayBind(ViewModel, x => x.Router, x => x.ShellRouteHost.Router).DisposeWith(o);
-
+                this.BindCommand(ViewModel, x => x.NavigationTo, x => x.TestingBoard).DisposeWith(o);
+                this.BindCommand(ViewModel, x => x.NavigationTo, x => x.EditorBoard).DisposeWith(o);
+                this.BindCommand(ViewModel, x => x.NavigationTo, x => x.Debug).DisposeWith(o);
+                this.BindCommand(ViewModel, x => x.NavigationTo, x => x.History).DisposeWith(o);
             });
         }
 

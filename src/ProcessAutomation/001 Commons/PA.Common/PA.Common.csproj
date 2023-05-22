@@ -1,16 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="ReactiveUI" Version="18.4.44" />
+    <PackageReference Include="ReactiveUI.Fody" Version="18.4.44" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\004 3rdParty\Zoranof.Workflow\Zoranof.Workflow.csproj" />
     <ProjectReference Include="..\PA.ICommon\PA.ICommon.csproj" />
   </ItemGroup>
 

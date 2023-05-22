@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Zoranof.WorkFlow;
 
-namespace PA.Common.Component
+namespace Zoranof.Workflow.Base
 {
-    public class Environments
+    public class StartNode : NodeTemplate
     {
+
     }
 }

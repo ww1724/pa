@@ -1,29 +1,23 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using PA.Common;
-using PA.Common.Mvvm;
+﻿using PA.Share;
+using PA.Share.Mvvm;
+using PA.Share.Stores;
 using ReactiveUI;
 using Splat;
-using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows;
-using WorkflowCore.Interface;
-using Zoranof.Workflow;
-using Zoranof.WorkFlow;
 
 namespace PA.ViewModels
 {
     public class TestingViewModel : ReactiveObject, IRoutableViewModel, IViewModel
     {
+        public TestingStore TestingStore
+            => Locator.Current.GetService<TestingStore>();
 
-
-        public string UrlPathSegment => Constants.TestingBoardView;
+        public string UrlPathSegment => Constants.TestingView;
 
         public IScreen HostScreen { get; }
 
-        public TestingViewModel(IScreen screen)
+        public TestingViewModel()
         {
-            HostScreen = screen ?? Locator.Current.GetService<IScreen>();
+            //HostScreen = screen ?? Locator.Current.GetService<IScreen>();
         }
     }
 

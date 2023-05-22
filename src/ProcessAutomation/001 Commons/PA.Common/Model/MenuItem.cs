@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PA.Common.Model
+namespace PA.Share.Model
 {
     public class MenuItem
     {

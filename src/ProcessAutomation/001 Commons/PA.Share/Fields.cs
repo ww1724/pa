@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PA.Common.Component
+﻿namespace PA.Share
 {
-    public static class Fields
+	public static class Fields
     {
 		private static string AppName => "ProcessAutmation";
 

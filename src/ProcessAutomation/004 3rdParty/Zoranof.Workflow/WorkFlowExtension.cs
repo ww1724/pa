@@ -28,5 +28,9 @@ namespace Zoranof.WorkFlow
             return services;
         }
 
+        public static void AddWorkflowAssembly(this IServiceCollection services, string path) 
+        { 
+            
+        }
     }
 }
