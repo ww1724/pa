@@ -5,13 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Zoranof.GraphicsFramework.Common;
 using Zoranof.Workflow.Common;
 using Zoranof.WorkFlow;
 
 namespace Zoranof.Workflow
 {
-    
+    public enum OptionType
+    {
+        From, To, Input, Output, Custom
+    }
 
     public class WorkflowOption
     {
@@ -42,14 +44,18 @@ namespace Zoranof.Workflow
         public bool IsRelative { get; set; }
         public OptionLocation Location { get; set; }
 
+        public OptionType Type { get; set; }
+
         // 视图绝对位置
         public Point PointToViewer { get => new Point(Owner.Pos.X + CenterPos.X, Owner.Pos.Y + CenterPos.Y); }
 
         // hover 准备高亮
         public bool IsHovered;
 
+        public bool IsConnected;
+
         // 作为连接起点正在连接
-        public bool IsOnConnecting;
+        public bool IsConnecting;
         #endregion
 
         #region Custom Events

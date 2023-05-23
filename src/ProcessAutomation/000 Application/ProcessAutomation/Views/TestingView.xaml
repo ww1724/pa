@@ -19,12 +19,8 @@
 
         <Grid Grid.Column="1">
             <workflow:WorkflowEditor x:Name="WorkflowEditor" Items="{Binding Items}"  Background="#FBF9F7"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
-                <Button x:Name="AddRandomNode" Content="  添加随机Item  " Margin="5"  Style="{StaticResource PrimaryButtonStyle}"/>
-                <Button Content="开始执行Action 1" Margin="5"   Style="{StaticResource PrimaryButtonStyle}"/>
-                <Button Content="开始执行Action 2" Margin="5"  Style="{StaticResource PrimaryButtonStyle}"/>
-                <Button Content="开始执行Action 3" Margin="5"  Style="{StaticResource PrimaryButtonStyle}"/>
-
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20">
+                <Button Content="开始执行" Margin="5"   Style="{StaticResource PrimaryButtonStyle}"/>
                 <CheckBox helpers:IconHelper.Icon="&#xe7c9;">选择</CheckBox>
             </StackPanel>
         </Grid>

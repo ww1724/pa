@@ -1,10 +1,8 @@
 ﻿using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using WorkflowCore.Models;
-using Zoranof.GraphicsFramework;
 using Zoranof.Workflow;
 using Zoranof.Workflow.Common;
 
@@ -63,7 +61,7 @@ namespace Zoranof.WorkFlow
 
         public string Description { get; set; }
 
-        public List<WorkflowOption> Options { get; set; }
+        public virtual List<WorkflowOption> Options { get; set; }
 
         public WorkflowEditor AttachedView { get; set; }
 
@@ -110,7 +108,7 @@ namespace Zoranof.WorkFlow
         public double Width { get => width; set { width = value; OnItemResized(null); } }
 
 
-        public double Height { get => height; set { height = value; OnItemResized(null); } }
+        public virtual double Height { get => height; set { height = value; OnItemResized(null); } }
         #endregion
 
         #region Variables
@@ -283,7 +281,7 @@ namespace Zoranof.WorkFlow
 
             foreach (var option in Options)
             {
-                if (!(IsHovered || option.IsOnConnecting || IsSelected || IsActive)) continue;
+                if (!(IsHovered || option.IsConnecting || IsSelected || IsActive)) continue;
                 Pen dotPen = option.IsHovered ? new Pen(Brushes.Blue, 1) : new Pen(Brushes.Black, 1);
                 Brush bg = option.IsHovered ? Brushes.Red : Brushes.White;
                 drawingContext.DrawEllipse(bg, dotPen, option.CenterPos, 4, 4);
@@ -356,7 +354,6 @@ namespace Zoranof.WorkFlow
         public event EventHandler TextInputed;
 
         public event EventHandler ContentExported;
-
 
         public virtual void OnSizeChanged(EventArgs e) => SizeChanged?.Invoke(this, e);
 

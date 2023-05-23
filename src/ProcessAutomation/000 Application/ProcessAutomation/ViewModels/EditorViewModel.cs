@@ -7,24 +7,19 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Linq;
 using Zoranof.WorkFlow;
+using Zoranof.Workflow.Common;
+using Zoranof.Workflow;
+using PA.Share.Stores;
+using Splat;
 
 namespace PA.ViewModels
 {
     public class EditorViewModel : ReactiveObject, IViewModel, IRoutableViewModel
     {
+        public TestingStore TestingStore
+            => Locator.Current.GetService<TestingStore>();
+
         private ObservableCollection<NodeItemMeta> nodeItemMetas;
-
-        public class NodeItemMeta
-        {
-            public string Title { get; set; }
-
-            public string Guid { get; set; }
-
-            public Dictionary<string, object> Attrs { get; set; }
-
-            public Type Type { get; set; }
-
-        }
 
         public string UrlPathSegment => Constants.EditorView;
 
@@ -34,21 +29,24 @@ namespace PA.ViewModels
 
         public EditorViewModel()
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var types = assembly.GetTypes();
-            var nodeTypes = types.Where(x => x.IsSubclassOf(typeof(WorkflowNode))).ToList();
             var t = new ObservableCollection<NodeItemMeta>();
-            foreach (var x in nodeTypes)
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assembly in assemblies)
             {
-                t.Add(
-                    new NodeItemMeta
-                    {
-                        Title = x.Name,
-                        Guid = x.GUID.ToString(),
-                        Attrs = x.GetCustomAttributes(true).ToDictionary(x => x.GetType().Name, x => x),
-                        Type = x
-                    });
+                var nodeTypes = assembly.GetTypes().Where(x => x.IsSubclassOf(typeof(WorkflowNode))).ToList();
+                foreach (var x in nodeTypes)
+                {
+                    var attr = x.GetCustomAttribute<NodeAttribute>();
+                    var itemMeta = new NodeItemMeta();
+                    itemMeta.Type = x;
+                    itemMeta.Guid = x.GUID.ToString();
+                    itemMeta.Title = attr != null ? attr.Title : x.Name;
+                    itemMeta.Group = attr != null ? attr.Group : "Base";
+                    itemMeta.Attrs = x.GetCustomAttributes(true).ToDictionary(x => x.GetType().Name, x => x);
+                    t.Add(itemMeta);
+                }
             }
+
             NodeItemMetas = new ObservableCollection<NodeItemMeta>(t);
         }
     }

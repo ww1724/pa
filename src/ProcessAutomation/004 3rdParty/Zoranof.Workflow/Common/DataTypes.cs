@@ -2,6 +2,25 @@
 
 namespace Zoranof.Workflow.Common
 {
+    public static class DataTypeExtension
+    {
+        public static readonly string DragDataModelFormat = "NodeItemType";
+    }
+
+    public class NodeItemMeta
+    {
+        public string Title { get; set; }
+
+        public string Guid { get; set; }
+
+        public string Group { get; set; }
+
+        public Dictionary<string, object> Attrs { get; set; }
+
+        public Type Type { get; set; }
+
+    }
+
     #region Enums
     public enum ExecOptionType
     {

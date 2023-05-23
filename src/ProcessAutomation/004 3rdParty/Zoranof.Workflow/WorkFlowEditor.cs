@@ -1,12 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using Zoranof.GraphicsFramework.Common;
 using Zoranof.Workflow.Common;
 using Zoranof.WorkFlow;
 
@@ -650,7 +648,7 @@ namespace Zoranof.Workflow
                     if (nearOption != null)
                     {
                         m_fromOption = nearOption;
-                        nearOption.IsOnConnecting = true;
+                        nearOption.IsConnecting = true;
                         m_isReadyToConnectOption = true;
                         m_toConnectOptionStartPoint = nearOption.PointToViewer;
                         m_toConnectOptionEndPoint = nearOption.PointToViewer;
@@ -738,7 +736,7 @@ namespace Zoranof.Workflow
                 m_isReadyToConnectOption = false;
                 m_toConnectOptionStartPoint = new Point(0, 0);
                 m_toConnectOptionEndPoint = new Point(0, 0);
-                m_fromOption.IsOnConnecting = false;
+                m_fromOption.IsConnecting = false;
                 InvalidateVisual();
             }
             else
@@ -936,22 +934,38 @@ namespace Zoranof.Workflow
         protected override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
+
+            if (e.Data.GetDataPresent(DataTypeExtension.DragDataModelFormat))
+            {
+                object data = e.Data.GetData(DataTypeExtension.DragDataModelFormat);
+                if (!(data is Type)) return;
+                var type = (Type)data;
+                if (!type.IsSubclassOf(typeof(WorkflowNode))) return;
+                WorkflowNode workflowNode= (WorkflowNode)Activator.CreateInstance(type);
+                workflowNode.Pos = e.GetPosition(this);
+                this.Items.Add(workflowNode);
+            }
         }
 
         protected override void OnDragEnter(DragEventArgs e)
         {
             base.OnDragEnter(e);
+            if (e.Data.GetDataPresent(DataTypeExtension.DragDataModelFormat))
+                e.Effects = DragDropEffects.Copy;
+            else
+                e.Effects = DragDropEffects.None;
         }
 
-        protected override void OnDragOver(DragEventArgs e)
-        {
-            base.OnDragOver(e);
-        }
+        //protected override void OnDragOver(DragEventArgs e)
+        //{
+        //    base.OnDragOver(e);
+        //}
 
-        protected override void OnDragLeave(DragEventArgs e)
-        {
-            base.OnDragLeave(e);
-        }
+        //protected override void OnDragLeave(DragEventArgs e)
+        //{
+        //    //e.Data
+        //    base.OnDragLeave(e);
+        //}
         #region Custom Events
         public event EventHandler ViewScaled;
         public event EventHandler SelectedChanged;
