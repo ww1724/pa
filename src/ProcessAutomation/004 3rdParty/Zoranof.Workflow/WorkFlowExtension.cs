@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using WorkflowCore.Interface;
@@ -22,15 +23,14 @@ namespace Zoranof.WorkFlow
             });
 
             // 注册steps workflows events repositories
-
             IWorkflowRepository workflowRepository;
             IEventRepository eventRepository;
             return services;
         }
 
         public static void AddWorkflowAssembly(this IServiceCollection services, string path) 
-        { 
-            
+        {
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using PA.ViewModels;
 using ReactiveUI;
+using System;
 
 namespace PA.Views
 {
@@ -13,6 +14,18 @@ namespace PA.Views
         public EditorView()
         {
             InitializeComponent();
+
+
+            this.WhenActivated(
+                d =>
+                {
+                    //this.Bind(ViewModel, vm => vm.NodeItemMetas, v => v.NodeSelectTree.Items).DisposeWith(d);
+                });
+        }
+
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
         }
     }
 }

@@ -13,7 +13,10 @@
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <workflowcontrols:NodeTree x:Name="NodeSelectTree" />
+        
+        <ListView Width="235" x:Name="NodeSelectTree"></ListView>
+        
+        <!--<workflowcontrols:NodeTree x:Name="NodeSelectTree" />-->
 
         <workflow:WorkflowEditor x:Name="CodeEditor" 
                                  Grid.Column="1"/>

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Zoranof.GraphicsFramework.Common
 {
-    public class GraphicsItemAttribute : Attribute
+	
+    public class NodeAttribute : Attribute
     {
-		public GraphicsItemAttribute(string name, string path, string description) { 
+		public NodeAttribute(string name, string Title, string path, string description) { 
 			Name = name;
 			Path = path;
 			Description = description;

@@ -15,6 +15,8 @@ namespace PA.Views
         {
             InitializeComponent();
 
+
+
             this.WhenActivated(
                 d =>
                 {
