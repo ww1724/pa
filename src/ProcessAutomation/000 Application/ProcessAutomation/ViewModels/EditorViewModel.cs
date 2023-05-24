@@ -37,6 +37,7 @@ namespace PA.ViewModels
                 foreach (var x in nodeTypes)
                 {
                     var attr = x.GetCustomAttribute<NodeAttribute>();
+                    if (attr == null || attr.Group == "Template") continue;
                     var itemMeta = new NodeItemMeta();
                     itemMeta.Type = x;
                     itemMeta.Guid = x.GUID.ToString();

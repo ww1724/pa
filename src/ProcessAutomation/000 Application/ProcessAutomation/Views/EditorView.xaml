@@ -22,7 +22,7 @@
         </Grid.ColumnDefinitions>
         
         <ListView Width="235" x:Name="NodeSelectTree" MouseMove="NodeSelectTree_MouseMove" Background="#fff">
-            <ListView.GroupStyle>
+            <!--<ListView.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.ContainerStyle>
                         <Style TargetType="{x:Type GroupItem}">
@@ -43,7 +43,7 @@
                         </Style>
                     </GroupStyle.ContainerStyle>
                 </GroupStyle>
-            </ListView.GroupStyle>
+            </ListView.GroupStyle>-->
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Vertical" />

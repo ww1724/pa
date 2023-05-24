@@ -29,17 +29,11 @@ namespace PA.Share.Stores
         #endregion
 
         public TestingStore() {
-
-            AddRandomeNodeCommand = ReactiveCommand.Create(() => AddRandomeNode());
         }
 
         public string CurrentCode { get; set; }
 
         #region Actions
-        public void AddRandomeNode()
-        {
-            Nodes.Add(new StartNode() { });
-        }
         #endregion
 
 

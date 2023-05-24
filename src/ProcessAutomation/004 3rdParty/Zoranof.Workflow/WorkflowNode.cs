@@ -44,7 +44,7 @@ namespace Zoranof.WorkFlow
 
         public object Data { get { return data; } set { data = value; } }
 
-        public StepBody StepBody { get; set; }
+        public Type StepBodyType { get; set; }
         #endregion
 
         #region Private Member
@@ -176,7 +176,17 @@ namespace Zoranof.WorkFlow
         #endregion
 
         #region public slots
-        public virtual string ExportToJson() { return ""; }
+        public virtual string ExportToJson() {
+            var a = new
+            {
+                Id,
+                Width,
+                Height,
+                Pos,
+            };
+
+            return ""; 
+        }
 
         public virtual void UpdateOptions()
         {
@@ -258,7 +268,12 @@ namespace Zoranof.WorkFlow
         /// 绘制框架 背景+边框
         /// </summary>
         /// <param name="drawingContext"></param>
-        public  virtual void OnDrawFramework(DrawingContext drawingContext) { }
+        public  virtual void OnDrawFramework(DrawingContext drawingContext) {
+
+            drawingContext.DrawRoundedRectangle(Brushes.Transparent,
+                new Pen(Brushes.LightGray, 2),
+                SelfRect, 4, 4);
+        }
 
         /// <summary>
         /// 绘制标题
@@ -278,7 +293,6 @@ namespace Zoranof.WorkFlow
         /// <param name="drawingContext"></param>
         public  virtual void OnDrawConnectOption(DrawingContext drawingContext)
         {
-
             foreach (var option in Options)
             {
                 if (!(IsHovered || option.IsConnecting || IsSelected || IsActive)) continue;

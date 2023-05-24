@@ -456,6 +456,12 @@ namespace Zoranof.Workflow
             return flag;
         }
 
+        public virtual string ExportCanvas() { return ""; }
+        public virtual string ExportNodes() { return ""; }
+        public virtual string ExportWorkflowStep() { return ""; }
+        public virtual void ImportToCanvasFromFile(string file) { }
+        public virtual void ImportToCanvas(string text) { }
+
         public WorkflowOption GetNearOption(Point point)
         {
 
@@ -579,26 +585,16 @@ namespace Zoranof.Workflow
             drawingContext.PushTransform(new TranslateTransform(ViewerLocation.X, ViewerLocation.Y));
             if (m_isReadyToConnectOption)
             {
-                drawingContext.DrawLine(new Pen(Brushes.Green, 2), m_toConnectOptionStartPoint, m_toConnectOptionEndPoint);
-                //StreamGeometry geometry = new();
-                //using (StreamGeometryContext ctx = geometry.Open())
-                //{
-                //    ctx.BeginFigure(m_toConnectOptionStartPoint, false, false);
-                //    var c1 = new Point(m_toConnectOptionStartPoint.X + (m_toConnectOptionEndPoint.X - m_toConnectOptionStartPoint.X) / 2, m_toConnectOptionStartPoint.Y + (m_toConnectOptionEndPoint.Y - m_toConnectOptionStartPoint.Y) / 3);
-                //    var c2 = new Point(m_toConnectOptionEndPoint.X + (m_toConnectOptionEndPoint.X - m_toConnectOptionStartPoint.X) / 2, m_toConnectOptionEndPoint.Y + (m_toConnectOptionEndPoint.Y - m_toConnectOptionStartPoint.Y) / 2);
-                //    drawingContext.DrawEllipse(Brushes.Red, new Pen(Brushes.Red, 2), c1, 6, 6);
-                //    drawingContext.DrawEllipse(Brushes.Red, new Pen(Brushes.Red, 2), c2, 6, 6);
-
-                //    ctx.BezierTo(c1, c2, m_toConnectOptionEndPoint, true, true);
-                //}
-                //geometry.Freeze();
-                //drawingContext.DrawGeometry(null, new Pen(Brushes.Green, 2), geometry);
+                drawingContext.DrawLine(new Pen(
+                    new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0BBABA")), 2), 
+                    m_toConnectOptionStartPoint, 
+                    m_toConnectOptionEndPoint);
             }
 
             foreach (var link in Links)
             {
                 if (link.IsHovered || link.IsSelected || link.IsDragging) drawingContext.DrawLine(new Pen(Brushes.Red, 2), link.StartPoint, link.EndPoint);
-                else drawingContext.DrawLine(new Pen(Brushes.Green, 2), link.StartPoint, link.EndPoint);
+                else drawingContext.DrawLine(new Pen(new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0BBABA")), 2), link.StartPoint, link.EndPoint);
             }
 
             drawingContext.Pop();

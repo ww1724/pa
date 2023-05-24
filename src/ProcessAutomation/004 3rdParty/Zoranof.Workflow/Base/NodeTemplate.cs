@@ -6,7 +6,7 @@ using Zoranof.WorkFlow;
 
 namespace Zoranof.Workflow.Base
 {
-    [NodeAttribute(title: "Template", group: "workflow")]
+    [NodeAttribute(title: "NodeTemplate", group: "Template")]
     public class NodeTemplate : WorkflowNode
     {
         public NodeTemplate() : base(false)
@@ -48,50 +48,50 @@ namespace Zoranof.Workflow.Base
 
         #region Events
 
-        public override void OnDrawFramework(DrawingContext drawingContext)
-        {
-            Brush bg = Brushes.White;
-            Pen pen = new Pen(IsSelected || IsHovered ? Brushes.DeepSkyBlue : Brushes.LightGray, 2);
-            drawingContext.DrawRoundedRectangle(ThemeColor, pen, SelfRect, 12, 12);
+        //public override void OnDrawFramework(DrawingContext drawingContext)
+        //{
+        //    Brush bg = Brushes.White;
+        //    Pen pen = new Pen(IsSelected || IsHovered ? Brushes.DeepSkyBlue : Brushes.LightGray, 2);
+        //    drawingContext.DrawRoundedRectangle(ThemeColor, pen, SelfRect, 12, 12);
 
-            pen.Thickness = 0;
-            drawingContext.DrawRoundedRectangle(Brushes.White, pen, new Rect(4, TitleHeight, Width - 8, Height - TitleHeight- 4), 8, 8);
-        }
+        //    pen.Thickness = 0;
+        //    drawingContext.DrawRoundedRectangle(Brushes.White, pen, new Rect(4, TitleHeight, Width - 8, Height - TitleHeight- 4), 8, 8);
+        //}
 
-        public override void OnDrawConnectOption(DrawingContext drawingContext)
-        {
-            OnDrawInputOptions(drawingContext);
-            OnDrawOutputOptions(drawingContext);
-        }
+        //public override void OnDrawConnectOption(DrawingContext drawingContext)
+        //{
+        //    OnDrawInputOptions(drawingContext);
+        //    OnDrawOutputOptions(drawingContext);
+        //}
 
-        public virtual void OnDrawInputOptions(DrawingContext drawingContext) 
-        {
-            var inputOptions = Options.Where(o => o.Type == OptionType.Input).ToList();
-            var height = DefaultOptionHeight * inputOptions.Count;
-            int i = 0;
+        //public virtual void OnDrawInputOptions(DrawingContext drawingContext) 
+        //{
+        //    var inputOptions = Options.Where(o => o.Type == OptionType.Input).ToList();
+        //    var height = DefaultOptionHeight * inputOptions.Count;
+        //    int i = 0;
 
-            drawingContext.DrawRoundedRectangle(
-                ThemeColor, new Pen(ThemeColor, 0),
-                new Rect(Width - 12, Height - (inputOptions.Count() - 0.25) * DefaultOptionHeight - 50, 16, (inputOptions.Count() - 0.5) * DefaultOptionHeight),
-                8, 8);
+        //    drawingContext.DrawRoundedRectangle(
+        //        ThemeColor, new Pen(ThemeColor, 0),
+        //        new Rect(Width - 12, Height - (inputOptions.Count() - 0.25) * DefaultOptionHeight - 50, 16, (inputOptions.Count() - 0.5) * DefaultOptionHeight),
+        //        8, 8);
 
-            drawingContext.DrawRoundedRectangle(
-                ThemeColor, new Pen(ThemeColor, 0),
-                new Rect(-4, Height - (inputOptions.Count() - 0.25) * DefaultOptionHeight - 50, 16, (inputOptions.Count() - 0.5) * DefaultOptionHeight),
-                8, 8);
+        //    drawingContext.DrawRoundedRectangle(
+        //        ThemeColor, new Pen(ThemeColor, 0),
+        //        new Rect(-4, Height - (inputOptions.Count() - 0.25) * DefaultOptionHeight - 50, 16, (inputOptions.Count() - 0.5) * DefaultOptionHeight),
+        //        8, 8);
 
-            foreach (var option in inputOptions)
-            {
-                Brush bg = option.IsConnecting ? Brushes.Green : Brushes.White;
+        //    foreach (var option in inputOptions)
+        //    {
+        //        Brush bg = option.IsConnecting ? Brushes.Green : Brushes.White;
 
-                Pen pen = new Pen(Brushes.Orange, 2);
+        //        Pen pen = new Pen(Brushes.Orange, 2);
 
-                drawingContext.DrawEllipse(bg, pen, new Point(4, Height - (i + 0.5) * DefaultOptionHeight - 50), 4, 4);
-                drawingContext.DrawEllipse(bg, pen, new Point(Width - 4, Height - (i + 0.5) * DefaultOptionHeight - 50), 4, 4);
+        //        drawingContext.DrawEllipse(bg, pen, new Point(4, Height - (i + 0.5) * DefaultOptionHeight - 50), 4, 4);
+        //        drawingContext.DrawEllipse(bg, pen, new Point(Width - 4, Height - (i + 0.5) * DefaultOptionHeight - 50), 4, 4);
                 
-                i++;
-            }
-        }
+        //        i++;
+        //    }
+        //}
 
         public virtual void OnDrawOutputOptions(DrawingContext drawingContext) { }
         #endregion
