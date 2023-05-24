@@ -48,12 +48,14 @@
                             <Button x:Name="EditorBoard" CommandParameter="{x:Static main:Constants.EditorView}"
                                     Style="{StaticResource TextButtonStyle}"  Margin="5" 
                                     helpers:IconHelper.Icon="&#xe684;" helpers:IconHelper.IconSize="20" />
-                            <Button x:Name="Debug" CommandParameter="{x:Static main:Constants.ConsoleView}"
-                                    Style="{StaticResource TextButtonStyle}" Margin="5" 
-                                    helpers:IconHelper.Icon="&#xe688;" helpers:IconHelper.IconSize="20" />
+                            
                             <Button x:Name="History" CommandParameter="{x:Static main:Constants.HistoryView}"
                                     Style="{StaticResource TextButtonStyle}" Margin="5" 
                                     helpers:IconHelper.Icon="&#xe807;" helpers:IconHelper.IconSize="20"/>
+
+							<Button x:Name="Console" CommandParameter="{x:Static main:Constants.ConsoleView}"
+                                    Style="{StaticResource TextButtonStyle}" Margin="5"
+                                    helpers:IconHelper.Icon="&#xe688;" helpers:IconHelper.IconSize="20" />
                             <Button x:Name="central" CommandParameter="{x:Static main:Constants.NewTabView}"
                                     Style="{StaticResource TextButtonStyle}" Margin="5" 
                                     helpers:IconHelper.Icon="&#xe7c9;" helpers:IconHelper.IconSize="20"

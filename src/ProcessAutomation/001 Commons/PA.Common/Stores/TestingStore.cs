@@ -3,11 +3,17 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
 using System.Reactive;
+using Zoranof.Workflow;
 using Zoranof.Workflow.Base;
 using Zoranof.WorkFlow;
 
 namespace PA.Share.Stores
 {
+    public class TestingRecord
+    {
+
+    }
+
     public class TestingStore : ReactiveObject, IViewModel
     {
 
@@ -17,10 +23,18 @@ namespace PA.Share.Stores
         [Reactive]
         public string FlowChartCode { get; set; }
 
-        private ObservableCollection<WorkflowNode> nodes;
+        [Reactive]
+        public string CurrentCode { get; set; }
 
-        //[Reactive]
+        private ObservableCollection<WorkflowNode> nodes;
+        private ObservableCollection<TestingRecord> testingRecords;
+
         public ObservableCollection<WorkflowNode> Nodes { get => nodes; set => this.RaiseAndSetIfChanged(ref nodes, value); }
+
+        public ObservableCollection<TestingRecord> TestingRecords { get => testingRecords; set => this.RaiseAndSetIfChanged(ref testingRecords, value); }
+
+        public TestingDynamicData Storage { get; set; }
+
 
 
         #region Commands
@@ -29,11 +43,18 @@ namespace PA.Share.Stores
         #endregion
 
         public TestingStore() {
+
+            AddRandomeNodeCommand = ReactiveCommand.Create(() => AddRandomeNode());
+            
         }
 
-        public string CurrentCode { get; set; }
+        
 
         #region Actions
+        public void AddRandomeNode()
+        {
+
+        }
         #endregion
 
 
