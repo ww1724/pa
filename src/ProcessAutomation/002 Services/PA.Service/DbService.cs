@@ -1,5 +1,6 @@
-﻿using ATE.Common.Entities;
+﻿using PA.Service.Entities;
 using PA.Service.Interface;
+using PA.Share;
 using SqlSugar;
 using System.Configuration;
 
@@ -36,27 +37,28 @@ namespace PA.Service
             sugarClient.CodeFirst.InitTables(
                 typeof(ProductEntity),
                 typeof(UserEntity),
-                typeof(TestingCodeEntity));
+                typeof(TestingCodeEntity),
+                typeof(TestingItem));
 
-                //typeof(GeneralDataEntity),
-                //typeof(ConfigurationEntity),
+            //typeof(GeneralDataEntity),
+            //typeof(ConfigurationEntity),
 
-                
-                //typeof(TestingDataEntity),
-                //typeof(TestingProject),
-                //typeof(TestingAction),
-                //typeof(TestingRecord),
-                //typeof(ProductEntity));
 
-            //if (!sugarClient.Queryable<UserEntity>().Any())
-            //{
-            //    sugarClient.InsertableByObject(new UserEntity
-            //    {
-            //        Name = "Zoran.Yang",
-            //        Role = "SuperAdmin",
-            //        Passwd = "db49172",
-            //    }).ExecuteCommand();
-            //}
+            //typeof(TestingDataEntity),
+            //typeof(TestingProject),
+            //typeof(TestingAction),
+            //typeof(TestingRecord),
+            //typeof(ProductEntity));
+
+            if (!sugarClient.Queryable<UserEntity>().Any())
+            {
+                sugarClient.InsertableByObject(new UserEntity
+                {
+                    Name = "Zoran.Yang",
+                    Role = "SuperAdmin",
+                    Passwd = "db49172",
+                }).ExecuteCommand();
+            }
         }
 
         /// <summary>

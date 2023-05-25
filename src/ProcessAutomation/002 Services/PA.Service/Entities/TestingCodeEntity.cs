@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ATE.Common.Entities
+namespace PA.Service.Entities
 {
     public class TestingCodeEntity
     {
-        
+
         public int Id { get; set; }
 
         public string Name { get; set; }

@@ -8,6 +8,11 @@ namespace Zoranof.Workflow.Device
 {
     public class WVITesterHelper
     {
+        public bool DeviceSelfTest(string deviceport, string deviceGate)
+        {
+            return true;
+        }
+
         public bool SetVoltage(int voltage, string deviceport, string deviceGate)
         {
 

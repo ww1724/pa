@@ -1,5 +1,6 @@
 ﻿using PA.ViewModels;
 using ReactiveUI;
+using System.Reactive.Disposables;
 
 namespace PA.Views
 {
@@ -12,6 +13,17 @@ namespace PA.Views
         public ConsoleView()
         {
             InitializeComponent();
+
+            this.WhenActivated(
+                d=>
+                {
+                    this.BindCommand(ViewModel, vm => vm.RouterStore.NavigationToCommand, v => v.TestingItemManage).DisposeWith(d);
+                    this.BindCommand(ViewModel, vm => vm.RouterStore.NavigationToCommand, v => v.DeviceManage).DisposeWith(d);
+                    this.BindCommand(ViewModel, vm => vm.RouterStore.NavigationToCommand, v => v.StatisticsManage).DisposeWith(d);
+                    this.BindCommand(ViewModel, vm => vm.RouterStore.NavigationToCommand, v => v.DatabaseManage).DisposeWith(d);
+                });
         }
+
+
     }
 }

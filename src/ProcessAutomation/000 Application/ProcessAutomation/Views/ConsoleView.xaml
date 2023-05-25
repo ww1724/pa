@@ -3,10 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                       xmlns:share="clr-namespace:PA.Share;assembly=PA.Share"
              xmlns:local="clr-namespace:PA.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="Console View"/>
+        <UniformGrid>
+            <Button x:Name="TestingItemManage" Width="200" Height="80" FontSize="20" CommandParameter="{x:Static share:Constants.TestingItemEditorView}">测试项管理</Button>
+            <Button x:Name="DeviceManage" Width="200" Height="80" FontSize="20" CommandParameter="{x:Static share:Constants.DeviceEditorView}">设备仪器管理</Button>
+            <Button x:Name="StatisticsManage" Width="200" Height="80" FontSize="20" CommandParameter="{x:Static share:Constants.StatisticsEditorView}">数据查看</Button>
+            <Button x:Name="DatabaseManage" Width="200" Height="80" FontSize="20" CommandParameter="{x:Static share:Constants.DatabaseEditorView}">数据库管理</Button>
+        </UniformGrid>
     </Grid>
 </local:ConsoleViewBase>

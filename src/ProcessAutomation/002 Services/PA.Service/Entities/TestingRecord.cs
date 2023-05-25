@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ATE.Common.Entities
+namespace PA.Service.Entities
 {
     public class TestingRecord
     {

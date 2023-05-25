@@ -10,6 +10,11 @@ using Zoranof.WorkFlow;
 
 namespace Zoranof.Workflow
 {
+    public enum EditorAction
+    {
+        BoxSelect, MoveViewer, MoveItem, Connect, None
+    }
+
     public class WorkflowEditor : Control
     {
         public static double DefaultConnectDistance = 30;
@@ -95,10 +100,18 @@ namespace Zoranof.Workflow
         #endregion
 
         #region Variables
+        public EditorAction m_action = EditorAction.None;
+
         public bool IsDragging;
 
         public Point ViewerLocation { get; set; } = new Point(0, 0);
         public double ViewerScale { get; set; }
+
+        private Point m_cursor_point = new Point(0, 0);
+        private Point m_cursor_canvas_point => PointPixelMap2Viewer(m_cursor_point);
+
+        private Point m_actionStartPoint = new Point(0, 0);
+        private Point m_actionEndPoint = new Point(0, 0);
 
         private bool m_isReadyToBoxSelect;
         private Point m_boxSelectStartPoint;
@@ -134,7 +147,17 @@ namespace Zoranof.Workflow
             {
                 if (Items[i].IsSelected)
                 {
+                    for (int j = Links.Count - 1; j >= 0; j--)
+                    {
+                        if (Links[j].From.Owner == Items[i] || Links[j].To.Owner == Items[i])
+                        {
+                            Links.RemoveAt(j);
+                        }
+                    }
+
                     Items.RemoveAt(i);
+
+                    OnItemRemoved(new WorkflowEventArgs { Item = Items[i] });
                 }
             }
 
@@ -382,8 +405,10 @@ namespace Zoranof.Workflow
         /// <param name="point">通常为鼠标坐标</param>
         /// <returns>视图坐标</returns>
         protected virtual Point PointPixelMap2Viewer(Point point) => new Point(
-            (point.X - ViewerLocation.X) * ViewerScale,
-            (point.X - ViewerLocation.X) * ViewerScale);
+            point.X * ViewerScale + ViewerLocation.X, 
+            point.Y * ViewerScale + ViewerLocation.Y);
+            //(point.X - ViewerLocation.X) * ViewerScale,
+            //(point.X - ViewerLocation.X) * ViewerScale);
 
         protected virtual Point PointViewerMap2Pixel(Point point) => new(
             point.X / ViewerScale + ViewerLocation.X,
@@ -480,25 +505,24 @@ namespace Zoranof.Workflow
             return roption;
         }
 
-
         /// <summary>
         /// 是否碰撞
         /// </summary>
         /// <param name="item"></param>
         /// <param name="mode"></param>
         /// <returns></returns>
-        protected internal virtual bool IsCollidesWithItem(WorkflowNode a, WorkflowNode b, ItemSelectionMode mode = ItemSelectionMode.IntersectsItemShape) { return true; }
+        public virtual bool IsCollidesWithItem(WorkflowNode a, WorkflowNode b, ItemSelectionMode mode = ItemSelectionMode.IntersectsItemShape) { return true; }
 
 
         /// <summary>
         /// 确保Item可见
         /// </summary>
-        protected internal virtual void EnsureVisible(WorkflowNode item) { }
+        public virtual void EnsureVisible(WorkflowNode item) { }
 
         /// <summary>
         /// 确保Items可见
         /// </summary>
-        protected internal virtual void EnsureVisible(ICollection<WorkflowNode> items) { }
+        public virtual void EnsureVisible(ICollection<WorkflowNode> items) { }
         #endregion
 
         #region Events
@@ -567,12 +591,12 @@ namespace Zoranof.Workflow
 
         protected virtual void OnDrawActionIndicator(DrawingContext drawingContext)
         {
-            if (m_isReadyToBoxSelect)
+            if (m_action == EditorAction.BoxSelect)
             {
                 drawingContext.DrawRectangle(
                     new SolidColorBrush() { Opacity = 0.5, Color = Color.FromArgb(100, 0, 0, 0) },
                     new Pen(),
-                    new Rect(m_boxSelectStartPoint, m_boxSelectEndPoint));
+                    new Rect(m_actionStartPoint, m_actionEndPoint));
             }
         }
 
@@ -582,14 +606,16 @@ namespace Zoranof.Workflow
 
         protected internal void OnDrawLinks(DrawingContext drawingContext)
         {
-            drawingContext.PushTransform(new TranslateTransform(ViewerLocation.X, ViewerLocation.Y));
-            if (m_isReadyToConnectOption)
+            
+            if (m_action == EditorAction.Connect)
             {
                 drawingContext.DrawLine(new Pen(
                     new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0BBABA")), 2), 
-                    m_toConnectOptionStartPoint, 
-                    m_toConnectOptionEndPoint);
+                    m_actionStartPoint, 
+                    m_actionEndPoint);
             }
+
+            drawingContext.PushTransform(new TranslateTransform(ViewerLocation.X, ViewerLocation.Y));
 
             foreach (var link in Links)
             {
@@ -609,6 +635,7 @@ namespace Zoranof.Workflow
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             Focus();
+            m_cursor_point = e.GetPosition(this);
 
             // 左键按下 => 选择元素 || 准备移动元素 || 准备框选元素
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -622,8 +649,6 @@ namespace Zoranof.Workflow
                         InvalidateVisual();
                     }
                 }
-
-
 
                 var _activeItem = Items
                     .Where(x => RectMapToViewer(new Rect(
@@ -645,9 +670,12 @@ namespace Zoranof.Workflow
                     {
                         m_fromOption = nearOption;
                         nearOption.IsConnecting = true;
-                        m_isReadyToConnectOption = true;
-                        m_toConnectOptionStartPoint = nearOption.PointToViewer;
-                        m_toConnectOptionEndPoint = nearOption.PointToViewer;
+
+                        m_action = EditorAction.Connect;
+                        m_actionStartPoint = e.GetPosition(this);
+                        m_actionEndPoint = e.GetPosition (this);
+
+                        nearOption.IsConnecting = true;
                         m_inlinePoints.Add(m_toConnectOptionStartPoint);
                         Cursor = Cursors.Cross;
                         return;
@@ -664,9 +692,9 @@ namespace Zoranof.Workflow
                             else SelectItemAS(_activeItem);
                         }
                         // 准备移动元素
-                        m_isReadyToMoveSelectedItems = true;
-                        m_moveItemsStartPoint = e.GetPosition(this);
-                        m_moveItemsEndPoint = e.GetPosition(this);
+                        m_action = EditorAction.MoveItem;
+                        m_actionStartPoint = e.GetPosition(this);
+                        m_actionEndPoint = e.GetPosition(this);
                         Cursor = Cursors.SizeAll;
                     }
                 }
@@ -676,10 +704,9 @@ namespace Zoranof.Workflow
                     if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
                         UnSeselectAllItems();
 
-                    m_isReadyToBoxSelect = true;
-
-                    m_boxSelectStartPoint = e.GetPosition(this);
-                    m_boxSelectEndPoint = e.GetPosition(this);
+                    m_action = EditorAction.BoxSelect;
+                    m_actionStartPoint = m_cursor_point;
+                    m_actionEndPoint = m_cursor_point;
                     return;
                 }
             }
@@ -687,9 +714,13 @@ namespace Zoranof.Workflow
             // 滚轮按下
             if (e.MiddleButton == MouseButtonState.Pressed)
             {
-                m_isReadyToMoveViewer = true;
-                m_viewerMoveStartPoint = e.GetPosition(this);
-                m_viewerMoveEndPoint = e.GetPosition(this);
+                m_action = EditorAction.MoveViewer;
+                m_actionStartPoint = e.GetPosition(this);
+                m_actionEndPoint = e.GetPosition(this);
+
+                //m_isReadyToMoveViewer = true;
+                //m_viewerMoveStartPoint = e.GetPosition(this);
+                //m_viewerMoveEndPoint = e.GetPosition(this);
             }
 
             base.OnMouseDown(e);
@@ -697,50 +728,97 @@ namespace Zoranof.Workflow
 
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
-            if (m_isReadyToBoxSelect)
-            {
-                m_isReadyToBoxSelect = false;
-                m_boxSelectStartPoint = new Point(0, 0);
-                m_boxSelectEndPoint = new Point(0, 0);
-                InvalidateVisual();
-            }
-            else if (m_isReadyToMoveSelectedItems)
-            {
-                m_isReadyToMoveSelectedItems = false;
-                m_moveItemsStartPoint = new Point(0, 0);
-                m_moveItemsEndPoint = new Point(0, 0);
-                InvalidateVisual();
-            }
-            else if (m_isReadyToMoveViewer)
-            {
-                m_isReadyToMoveViewer = false;
-                m_viewerMoveStartPoint = new Point(0, 0);
-                m_viewerMoveEndPoint = new Point(0, 0);
-                InvalidateVisual();
-            }
-            else if (m_isReadyToConnectOption)
-            {
 
-                m_toConnectOptionEndPoint = e.GetPosition(this);
-                WorkflowOption nearOption = GetNearOption(e.GetPosition(this));
-                if (nearOption != null)
-                {
-                    m_toOption = nearOption;
-                    if (m_toOption.Owner != m_fromOption.Owner)
-                        Links.Add(new OptionLink { From = m_fromOption, To = m_toOption });
-                }
-                m_isReadyToConnectOption = false;
-                m_toConnectOptionStartPoint = new Point(0, 0);
-                m_toConnectOptionEndPoint = new Point(0, 0);
-                m_fromOption.IsConnecting = false;
-                InvalidateVisual();
-            }
-            else
+            switch(m_action)
             {
-                UnSeselectAllItems();
+                case EditorAction.BoxSelect:
+                    m_action = EditorAction.None;
+                    m_actionStartPoint = new Point(0, 0);
+                    m_actionEndPoint = new Point(0, 0);
+                    m_action = EditorAction.None;
+                    InvalidateVisual();
+                    break;
+                case EditorAction.MoveItem:
+                    m_action = EditorAction.None;
+                    m_actionStartPoint = new Point(0, 0);
+                    m_actionEndPoint = new Point(0, 0);
+                    m_action = EditorAction.None;
+                    InvalidateVisual();
+                    break;
+                case EditorAction.MoveViewer:
+                    m_action = EditorAction.None;
+                    m_actionStartPoint = new Point(0, 0);
+                    m_actionEndPoint = new Point(0, 0);
+                    m_action = EditorAction.None;
+                    InvalidateVisual();
+                    break;
+                case EditorAction.Connect:
+                    m_toConnectOptionEndPoint = e.GetPosition(this);
+                    WorkflowOption nearOption = GetNearOption(m_toConnectOptionEndPoint);
+                    if (nearOption != null)
+                    {
+                        m_toOption = nearOption;
+                        if (m_toOption.Owner != m_fromOption.Owner)
+                        {
+                            Links.Add(new OptionLink { From = m_fromOption, To = m_toOption });
+                        }
+                    }
+                    m_fromOption.IsConnecting = false;
+                    m_action = EditorAction.None;
+
+                    InvalidateVisual();
+                    break;
+                default:
+                    UnSeselectAllItems();
+                    break;
             }
 
             Cursor = Cursors.Arrow;
+
+
+            //if (m_isReadyToBoxSelect)
+            //{
+            //    m_isReadyToBoxSelect = false;
+            //    m_boxSelectStartPoint = new Point(0, 0);
+            //    m_boxSelectEndPoint = new Point(0, 0);
+            //    InvalidateVisual();
+            //}
+            //else if (m_isReadyToConnectOption || m_action == EditorAction.Connect)
+            //{
+
+            //    m_toConnectOptionEndPoint = e.GetPosition(this);
+            //    WorkflowOption nearOption = GetNearOption(e.GetPosition(this));
+            //    if (nearOption != null)
+            //    {
+            //        m_toOption = nearOption;
+            //        if (m_toOption.Owner != m_fromOption.Owner)
+            //        {
+            //            Links.Add(new OptionLink { From = m_fromOption, To = m_toOption });
+            //        }       
+            //    }
+            //    m_isReadyToConnectOption = false;
+            //    m_toConnectOptionStartPoint = new Point(0, 0);
+            //    m_toConnectOptionEndPoint = new Point(0, 0);
+            //    m_fromOption.IsConnecting = false;
+            //    InvalidateVisual();
+            //}
+            //else
+            //{
+            //    UnSeselectAllItems();
+            //}
+
+            Cursor = Cursors.Arrow;
+
+            switch (m_action)
+            {
+                case EditorAction.Connect:
+
+                    break;
+            }
+
+
+
+
             base.OnMouseUp(e);
         }
 
@@ -756,13 +834,28 @@ namespace Zoranof.Workflow
 
         protected override void OnMouseLeave(MouseEventArgs e)
         {
-            if (m_isReadyToBoxSelect)
+
+            switch (m_action)
             {
-                m_isReadyToBoxSelect = false;
-                m_boxSelectStartPoint = new Point(0, 0);
-                m_boxSelectEndPoint = new Point(0, 0);
-                InvalidateVisual();
+                case EditorAction.BoxSelect:
+                    m_action = EditorAction.None;
+                    m_actionStartPoint = new Point(0, 0);
+                    m_actionEndPoint = new Point(0, 0);
+                    InvalidateVisual();
+                    break;
+                case EditorAction.MoveItem:
+                    m_action = EditorAction.None;
+                    m_actionStartPoint = new Point(0, 0);
+                    m_actionEndPoint = new Point(0, 0);
+                    break;
             }
+            //if (m_isReadyToBoxSelect)
+            //{
+            //    m_isReadyToBoxSelect = false;
+            //    m_boxSelectStartPoint = new Point(0, 0);
+            //    m_boxSelectEndPoint = new Point(0, 0);
+            //    InvalidateVisual();
+            //}
             base.OnMouseLeave(e);
         }
 
@@ -770,32 +863,66 @@ namespace Zoranof.Workflow
         {
             base.OnMouseMove(e);
 
-            #region Hover
-            // link
+            var mouseInItem = Items
+            .Where(x => RectMapToViewer(new Rect(
+                x.BoundingRect.Left - NearItemDistance,
+                x.BoundingRect.Top - NearItemDistance,
+                x.BoundingRect.Width + 2 * NearItemDistance,
+                x.BoundingRect.Height + 2 * NearItemDistance))
+            .Contains(e.GetPosition(this)))
+            .OrderByDescending(x => x.ZIndex)
+            .FirstOrDefault();
+
             foreach (var link in Links)
             {
-                bool isNear = e.GetPosition(this).IsPointNearToLine(link.StartPoint, link.EndPoint, 10);
+                bool isNear = (PointPixelMap2Viewer(e.GetPosition(this))).IsPointNearToLine(link.StartPoint, link.EndPoint, 10);
                 if (link.IsHovered != isNear)
                 {
                     link.IsHovered = isNear;
                     InvalidateVisual();
                 }
-
             }
 
-            // item and options
-            //var mouseInItem = Items?.FirstOrDefault();
 
-            var mouseInItem = Items
-                .Where(x => RectMapToViewer(new Rect(
-                    x.BoundingRect.Left - NearItemDistance,
-                    x.BoundingRect.Top - NearItemDistance,
-                    x.BoundingRect.Width + 2 * NearItemDistance,
-                    x.BoundingRect.Height + 2 * NearItemDistance))
-                .Contains(e.GetPosition(this)))
-                .OrderByDescending(x => x.ZIndex)
-                .FirstOrDefault();
+            switch (m_action)
+            {
+                case EditorAction.Connect:
+                    m_actionEndPoint = e.GetPosition(this);
+                    InvalidateVisual();
+                    break;
+                case EditorAction.MoveViewer:
+                    m_actionEndPoint = e.GetPosition(this);
+                    MoveViewerWithOffset(new Vector(
+                        m_actionEndPoint.X - m_actionStartPoint.X,
+                        m_actionEndPoint.Y - m_actionStartPoint.Y));
+                    m_actionStartPoint = m_actionEndPoint;
+                    InvalidateVisual();
+                    break;
+                case EditorAction.MoveItem:
+                    m_actionEndPoint = e.GetPosition(this);
+                    var offset = new Vector(
+                        (m_actionEndPoint.X - m_actionStartPoint.X) / ViewerScale,
+                        (m_actionEndPoint.Y - m_actionStartPoint.Y) / ViewerScale);
+                    Console.WriteLine(offset);
+                    MoveSelectedItemsWithOffset(offset);
+                    m_actionStartPoint = m_actionEndPoint;
+                    InvalidateVisual();
+                    break;
+                case EditorAction.BoxSelect:
+                    m_actionEndPoint = e.GetPosition(this);
+                    Rect selectedBoxRect = new(m_actionStartPoint, m_actionEndPoint);
+                    ToBoxSelect(selectedBoxRect);
+                    break;
+            }
 
+
+            m_cursor_point = e.GetPosition(this);
+
+            #region 事件分发
+
+            #endregion
+
+            #region Hover
             bool isNeedToRefreshHover = false;
             //鼠标下有元素
             if (mouseInItem != null)
@@ -839,43 +966,6 @@ namespace Zoranof.Workflow
             if (isNeedToRefreshHover) InvalidateVisual();
 
             #endregion
-            /// Actions
-            // 框选Items
-            if (m_isReadyToBoxSelect)
-            {
-                m_boxSelectEndPoint = e.GetPosition(this);
-                Rect selectedBoxRect = new(m_boxSelectStartPoint, m_boxSelectEndPoint);
-                ToBoxSelect(selectedBoxRect);
-            }
-            else if (m_isReadyToConnectOption)
-            {
-                m_toConnectOptionEndPoint = e.GetPosition(this);
-
-                InvalidateVisual();
-            }
-            // 移动已选择元素
-            else if (m_isReadyToMoveSelectedItems)
-            {
-                m_moveItemsEndPoint = e.GetPosition(this);
-
-                var offset = new Vector(
-                    (m_moveItemsEndPoint.X - m_moveItemsStartPoint.X) / ViewerScale,
-                    (m_moveItemsEndPoint.Y - m_moveItemsStartPoint.Y) / ViewerScale);
-
-                MoveSelectedItemsWithOffset(offset);
-                m_moveItemsStartPoint = m_moveItemsEndPoint;
-            }
-
-            // 移动画布
-            else if (m_isReadyToMoveViewer)
-            {
-                m_viewerMoveEndPoint = e.GetPosition(this);
-                MoveViewerWithOffset(new Vector(
-                    m_viewerMoveEndPoint.X - m_viewerMoveStartPoint.X,
-                    m_viewerMoveEndPoint.Y - m_viewerMoveStartPoint.Y));
-                m_viewerMoveStartPoint = m_viewerMoveEndPoint;
-            }
-
         }
 
         protected override void OnTextInput(TextCompositionEventArgs e)

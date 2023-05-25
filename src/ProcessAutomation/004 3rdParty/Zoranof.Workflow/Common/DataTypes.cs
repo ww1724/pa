@@ -55,6 +55,11 @@ namespace Zoranof.Workflow.Common
             set { item = value; }
         }
 
+        public WorkflowEventArgs()
+        {
+
+        }
+
         public WorkflowEventArgs(WorkflowNode item) { Item = item; }
     }
 

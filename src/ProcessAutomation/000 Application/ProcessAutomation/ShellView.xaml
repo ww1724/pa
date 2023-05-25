@@ -8,9 +8,9 @@
         xmlns:rxui="http://reactiveui.net"
         xmlns:helpers="clr-namespace:Zoranof.UI.Wpf.Helpers;assembly=Zoranof.UI.Wpf"
         xmlns:ccontrols="clr-namespace:PA.Controls"
-        xmlns:main="clr-namespace:PA.Share;assembly=PA.Common"
+        xmlns:main="clr-namespace:PA.Share;assembly=PA.Share"
         Title="MainWindow" Height="800" Width="1200"
-        WindowState="Normal">
+        WindowState="Maximized">
 
     <WindowChrome.WindowChrome>
         <WindowChrome  WindowChrome.ResizeBorderThickness="5"

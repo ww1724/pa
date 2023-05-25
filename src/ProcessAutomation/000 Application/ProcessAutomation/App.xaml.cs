@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿
+using Microsoft.Extensions.DependencyInjection;
 using PA.Share;
 using PA.ICommon;
 using PA.Views;
@@ -11,6 +12,8 @@ using PA.Share.Stores;
 using PA.Share.Mvvm;
 using Zoranof.WorkFlow;
 using PA.Service;
+using ProcessAutomation.ViewModels;
+using PA.Service.Interface;
 
 namespace ProcessAutomation
 {
@@ -48,6 +51,7 @@ namespace ProcessAutomation
 
             //Locator.CurrentMutable.RegisterConstant(new DbService(), typeof(DbService));
             Locator.CurrentMutable.RegisterConstant(new LoggerService(), typeof(LoggerService));
+            Locator.CurrentMutable.RegisterConstant(new DbService(), typeof(IDbService));
 
             Locator.CurrentMutable.RegisterConstant(new GlobalStore(), typeof(GlobalStore));
             Locator.CurrentMutable.RegisterConstant(new RouterStore(), typeof(RouterStore));
@@ -62,6 +66,9 @@ namespace ProcessAutomation
             Locator.CurrentMutable.Register(() => new HistoryView(), typeof(IViewFor<HistoryViewModel>));
             Locator.CurrentMutable.Register(() => new NewTabView(), typeof(IViewFor<NewTabViewModel>));
 
+            Locator.CurrentMutable.Register(() => new TestingItemEditor(), typeof(IViewFor<TestingItemEditorViewModel>));
+            
+
             // viewmodels of main
             Locator.CurrentMutable.Register(() => new ShellViewModel(), typeof(IViewModel), Constants.ShellView);
             Locator.CurrentMutable.Register(() => new EditorViewModel(), typeof(IViewModel), Constants.EditorView);
@@ -69,6 +76,7 @@ namespace ProcessAutomation
             Locator.CurrentMutable.Register(() => new ConsoleViewModel(), typeof(IViewModel), Constants.ConsoleView);
             Locator.CurrentMutable.Register(() => new HistoryViewModel(), typeof(IViewModel), Constants.HistoryView);
             Locator.CurrentMutable.Register(() => new NewTabViewModel(), typeof(IViewModel), Constants.NewTabView);
+            Locator.CurrentMutable.Register(() => new TestingItemEditorViewModel(), typeof(IViewModel), Constants.TestingItemEditorView);
 
 
             // plugins

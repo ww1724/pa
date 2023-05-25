@@ -20,7 +20,7 @@
         <Grid Grid.Column="1">
             <workflow:WorkflowEditor x:Name="WorkflowEditor" Items="{Binding Items}"  Background="#FBF9F7"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20">
-                <Button Content="开始执行" Margin="5"   Style="{StaticResource PrimaryButtonStyle}"/>
+                <Button x:Name="StartTesting" Content="开始执行" Margin="5"   Style="{StaticResource PrimaryButtonStyle}"/>
                 <CheckBox helpers:IconHelper.Icon="&#xe7c9;">选择</CheckBox>
             </StackPanel>
         </Grid>

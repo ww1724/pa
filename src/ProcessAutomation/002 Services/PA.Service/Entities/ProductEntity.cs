@@ -1,6 +1,6 @@
 ﻿using SqlSugar;
 
-namespace ATE.Common.Entities
+namespace PA.Service.Entities
 {
     [SugarTable("ProductInfo")]
     public class ProductEntity

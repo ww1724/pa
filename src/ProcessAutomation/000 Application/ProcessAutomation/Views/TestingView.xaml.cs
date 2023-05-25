@@ -22,7 +22,7 @@ namespace PA.Views
                 {
                     this.Bind(ViewModel, vm => vm.TestingStore.Nodes, v => v.WorkflowEditor.Items).DisposeWith(d);
 
-                    //this.BindCommand(ViewModel, vm => vm.TestingStore.AddRandomeNodeCommand, v => v.AddRandomNode).DisposeWith(d);
+                    this.BindCommand(ViewModel, vm => vm.TestingStore.TestCommand, v => v.StartTesting).DisposeWith(d);
                 });
         }
     }

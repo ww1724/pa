@@ -1,4 +1,5 @@
-﻿using PA.Share.Mvvm;
+﻿using PA.Share;
+using PA.Share.Mvvm;
 using PA.Share.Stores;
 using PA.Views;
 using ReactiveUI;
@@ -28,21 +29,16 @@ namespace PA.ViewModels
             Locator.CurrentMutable.Register(() => new TestingView(), typeof(IViewFor<TestingViewModel>));
 
             Router.Navigate.Execute(new TestingViewModel());
-            //GoNext = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(new TestingViewModel(this)));
-            NavigationTo = ReactiveCommand.Create<string>(x => NavigateTo(x));
-            //var canGoBack = this
-            //    .WhenAnyValue(x => x.Router.NavigationStack.Count)
-            //    .Select(count => count > 0);
-            //GoBack = ReactiveCommand.CreateFromObservable(
-            //        () => Router.NavigateBack.Execute(Unit.Default, Unit.Default),
-            //        canGoBack);
+            NavigationTo = ReactiveCommand.Create<string>(x => NavigateToAction(x));
+            MessageBus.Current.Listen<string>("NavigationTo").Subscribe(NavigateToAction);
         }
 
-        public void NavigateTo(string path)
+        public void NavigateToAction(string path)
         {
             var a = (IRoutableViewModel)Locator.Current.GetService<IViewModel>(path);
-            Router.Navigate.Execute(a);
+            this.Router.Navigate.Execute(a);
         }
+
 
 
     }

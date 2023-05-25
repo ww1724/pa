@@ -17,7 +17,6 @@ namespace PA.ViewModels
 
         public TestingViewModel()
         {
-            //HostScreen = screen ?? Locator.Current.GetService<IScreen>();
         }
     }
 

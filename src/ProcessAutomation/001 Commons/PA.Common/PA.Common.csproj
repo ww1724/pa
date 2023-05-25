@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\002 Services\PA.Service\PA.Service.csproj" />
     <ProjectReference Include="..\..\004 3rdParty\Zoranof.Workflow\Zoranof.Workflow.csproj" />
     <ProjectReference Include="..\PA.ICommon\PA.ICommon.csproj" />
   </ItemGroup>

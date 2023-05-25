@@ -17,8 +17,6 @@ namespace Zoranof.Workflow
 
     public class WorkflowOption
     {
-
-
         public WorkflowOption(WorkflowNode owner, string text="")
         {
             Owner = owner;
@@ -85,8 +83,29 @@ namespace Zoranof.Workflow
         protected internal virtual void OnDataTransferStarted(EventArgs e) { DataTransferStarted.Invoke(this, e); }
         #endregion
 
-        #region private slots
-        //private bool AddConnection(GraphicsOption graphicsOption) { }
+
+        #region Public Slots
+        public virtual void ConnectTo(WorkflowOption option)
+        {
+            //if (option == null) return;
+            //if (option.IsSingle && option.IsConnected) return;
+            //if (IsSingle && IsConnected) return;
+            //if (IsConnecting) return;
+            //if (option.IsConnecting) return;
+            //if (IsConnected) Disconnect();
+            //if (option.IsConnected) option.Disconnect();
+            //IsConnecting = true;
+            //option.IsConnecting = true;
+            //OnConnectStarted(new EventArgs());
+            //option.Owner.ConnectTo(Owner);
+            //IsConnecting = false;
+            //option.IsConnecting = false;
+            //IsConnected = true;
+            //option.IsConnected = true;
+            //OnConnected(new EventArgs());
+        }
+        
+        public virtual bool IsInput() { return Type == OptionType.Input || Type == OptionType.From; }
         #endregion
     }
 }
