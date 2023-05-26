@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+    <PackageReference Include="System.IO.Ports" Version="7.0.0" />
     <PackageReference Include="WorkflowCore" Version="3.8.3" />
     <PackageReference Include="WorkflowCore.Persistence.MySQL" Version="3.8.3" />
   </ItemGroup>

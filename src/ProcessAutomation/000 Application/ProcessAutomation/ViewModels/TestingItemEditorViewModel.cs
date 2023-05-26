@@ -16,8 +16,6 @@ namespace ProcessAutomation.ViewModels
         public string UrlPathSegment => Constants.TestingItemEditorView;
         public IScreen HostScreen { get; }
 
-
-
         public string CurrentId { get; set; }
 
         public List<TestingItem> TestingItems { get; set; }
